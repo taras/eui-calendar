@@ -20,7 +20,7 @@ test('it should render', function (assert){
   assert.ok(this.$('eui-selectdate').length, 'eui-selectdate was rendered');
 });
 
-test('it should show button opens calendar on click', function (assert) {
+test('it should show button to open selectdate window', function (assert) {
   
   this.render(hbs`{{eui-selectdate}}`);
   
@@ -59,9 +59,19 @@ test('it should accept passed in date', function (assert){
   
   this.render(hbs`{{eui-selectdate date=date isOpen=true}}`);
   
-  assert.equal(this.$('.eui-selectdate--trigger').text().trim(), 'January 21', 'selected date is shown on the trigger');
-  assert.equal(this.$('.eui-selectdate--current-month-name').text().trim(), 'January 2014', 'current calendar shows January 2014');
-  assert.equal(this.$('.eui-selectdate--next-month-name').text().trim(), 'February 2014', 'next calendar shows February 2014');
+  assert.equal(this.$('.eui-selectdate--trigger').text().trim(), 'January 21', 'passed in date is shown on the trigger');
+});
+
+test('it should show current and next months to choose from', function(assert) {
+  
+  let date = Moment('January 21, 2014').utc();
+  
+  this.set('date', date);
+  
+  this.render(hbs`{{eui-selectdate date=date isOpen=true}}`);
+  
+  assert.equal(this.$('.eui-selectdate--current-month-name').text().trim(), 'January 2014', 'current calendar shows passed in date');
+  assert.equal(this.$('.eui-selectdate--next-month-name').text().trim(), 'February 2014', 'next calendar shows next month');
 });
 
 test('it should use date at render as default date', function(assert) {
@@ -86,6 +96,44 @@ test('it should accept date as first positional argument', function (assert){
   this.render(hbs`{{eui-selectdate date isOpen=true}}`);
   
   assert.equal(this.$('.eui-selectdate--trigger').text().trim(), 'January 21', 'selected date is shown on the trigger');
+});
+
+test('it should render current and next month calendars', function (assert){
+
+  let date = Moment('January 21, 2014').utc();
+  
+  this.set('date', date);
+  
+  this.render(hbs`{{eui-selectdate date isOpen=true}}`);
+  
+  assert.deepEqual(this.currentMonth.days(), [
+    '',    '',   '',   '1', '2',   '3',  '4',  
+    '5',  '6',  '7',  '8',  '9',  '10', '11', 
+    '12', '13', '14', '15', '16', '17', '18', 
+    '19', '20', '21', '22', '23', '24', '25', 
+    '26', '27', '28', '29', '30',  '31', '', 
+    '',   '',   '',     '',   '',   '',   ''
+  ], 'Days for January 2014 are shown in the calendar');
+  
+    assert.deepEqual(this.nextMonth.days(), [
+    '',    '',   '',   '',   '',  '',   '1',
+    '2',   '3',  '4',  '5',  '6',  '7',  '8',
+    '9',  '10', '11', '12', '13', '14', '15',
+    '16', '17', '18', '19', '20', '21', '22',
+    '23', '24', '25', '26', '27', '28', '', 
+    '',   '',   '',     '',   '',   '',   ''
+  ], 'Days for February 2014 are shown in the calendar');
+  
+});
+
+test('it should render next and previous buttons', function(assert) {
+  this.render(hbs`{{eui-selectdate isOpen=true}}`);
+  
+  assert.ok(this.$('button.eui-selectdate--next').length, 'next button is rendered');
+  assert.equal(this.$('button.eui-selectdate--next').text().trim(), '>>' /* &gt;&gt; */, 'next button shows >> arrow');
+  
+  assert.ok(this.$('.eui-selectdate--previous').length, 'previous button is rendered');
+  assert.equal(this.$('button.eui-selectdate--previous').text().trim(), '<<' /** &lt;&lt; */, 'previous button shows << arrow');
 });
 
 test('it should go back one month when previous button is clicked', function (assert) {
@@ -117,7 +165,6 @@ test('it should go back one month when previous button is clicked', function (as
     '26', '27', '28', '29', '30',  '31', '', 
     '',   '',   '',     '',   '',   '',   ''
   ], 'Days for January 2014 are shown in the calendar');
-  
 });
 
 test('it should go forward one month when next button is clicked', function (assert) {
