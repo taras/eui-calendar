@@ -5,7 +5,7 @@ import DaySelector from 'eui-calendar/tests/page-objects/day-selector';
 
 const FORMAT = 'MMMM YYYY';
 
-moduleForComponent('eui-selectdate', 'Integration | Component | eui selectdate', {
+moduleForComponent('eui-selectdate', 'Integration | Component | eui-selectdate', {
   integration: true,
   beforeEach() {
     this.currentMonth = new DaySelector(this, '.eui-selectdate--current-month ');
@@ -115,7 +115,7 @@ test('it should render current and next month calendars', function (assert){
     '',   '',   '',     '',   '',   '',   ''
   ], 'Days for January 2014 are shown in the calendar');
   
-    assert.deepEqual(this.nextMonth.days(), [
+  assert.deepEqual(this.nextMonth.days(), [
     '',    '',   '',   '',   '',  '',   '1',
     '2',   '3',  '4',  '5',  '6',  '7',  '8',
     '9',  '10', '11', '12', '13', '14', '15',
