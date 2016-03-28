@@ -295,3 +295,31 @@ test('it should accept range and on-range-change arguments', function(assert){
   assert.deepEqual(this.currentMonth.highlighted(), ['18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
   assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4', '5', '6', '7', '8']);
 });
+
+test('it should allow end to be before start', function(assert){
+  
+  let date = Moment('January 21, 2014');
+  
+  this.set('date', date);
+
+  
+  let startSelected, endSelected, actionHandlerCalled;
+  this.on('rangeChanged', function(start, end) {
+    actionHandlerCalled = true;
+    startSelected = start;
+    endSelected = end;
+  });
+  
+  this.render(hbs`{{eui-selectdate date isOpen=true range=true on-range-change='rangeChanged'}}`);
+  
+  this.nextMonth.selectDay(Moment('February 4, 2014'));
+
+  this.currentMonth.selectDay(Moment('January 18, 2014'));
+  
+  assert.ok(actionHandlerCalled);
+  assert.equal(startSelected.format('DD/MM/YYYY'), '18/01/2014');
+  assert.equal(endSelected.format('DD/MM/YYYY'), '04/02/2014');
+
+  assert.deepEqual(this.currentMonth.highlighted(), ['18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
+  assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4']);
+});

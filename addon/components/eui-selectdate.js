@@ -37,6 +37,11 @@ let EUISelectdateComponent = Ember.Component.extend({
       let range = this.get('range');
       if (range) {
         if (this.get('isSelectingRange')) {
+          let start = this.get('_start');
+          if (date.isBefore(start)) {
+            this.set('_start', date);
+            date = start;
+          }
           this.set('_end', date);
           this.sendAction('on-range-change', this.get('_start'), this.get('_end'));
           this.set('isSelectingRange', false);
