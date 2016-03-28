@@ -219,3 +219,48 @@ test('it should send on-select action when selection is made', function(assert){
   assert.equal(selection, '14/02/2014', 'Selected Feburary 14, 2014 from next month');
   
 });
+
+test('it should accept start and end dates', function(assert){
+  
+  let date = Moment('January 21, 2014');
+  let start = Moment('January 15, 2014');
+  let end = Moment('February 4, 2014');
+  
+  this.set('date', date);
+  this.set('start', start);
+  this.set('end', end);
+  
+  this.render(hbs`{{eui-selectdate date isOpen=true start=start end=end}}`);
+  
+  assert.deepEqual(this.currentMonth.highlighted(), ['15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
+  assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4']);
+});
+
+test('it should accept range and on-range-change arguments', function(assert){
+  
+  let date = Moment('January 21, 2014');
+  
+  this.set('date', date);
+  
+  let startSelected, endSelected, actionHandlerCalled;
+  this.on('rangeChanged', function(start, end) {
+    actionHandlerCalled = true;
+    startSelected = start;
+    endSelected = end;
+  });
+  
+  this.render(hbs`{{eui-selectdate date isOpen=true range=true on-range-change='rangeChanged'}}`)
+   
+  this.currentMonth.selectDay(Moment('January 15, 2014'));
+  
+  assert.notOk(actionHandlerCalled, 'action was not called');
+  
+  this.nextMonth.selectDay(Moment('February 4, 2014'));
+  
+  assert.ok(actionHandlerCalled);
+  assert.equal(startSelected.format('DD/MM/YYYY'), '15/01/2014');
+  assert.equal(endSelected.format('DD/MM/YYYY'), '04/02/2014');
+  
+  assert.deepEqual(this.currentMonth.highlighted(), ['15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
+  assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4']);
+});

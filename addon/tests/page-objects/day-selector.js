@@ -38,7 +38,7 @@ export default class DaySelector {
   }
   
   highlighted() {
-    return this.$('.--is-highlighted').map(trimText).toArray();
+    return this.$(`${this.prefix}.--is-highlighted`).map(trimText).toArray();
   }
 
   selectDay(day) {

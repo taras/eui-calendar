@@ -6,11 +6,11 @@
   <button class="eui-selectdate--previous" {{action 'previous' _date}}>&lt;&lt;</button>
   <div class="eui-selectdate--current-month">
     <div class="eui-selectdate--current-month-name">{{moment-format _date 'MMMM YYYY'}}</div>
-    {{eui-day-selector _date on-select='select'}}
+    {{eui-day-selector _date on-select='select' start=_start end=_end}}
   </div>
   <div class="eui-selectdate--next-month">
       <div class="eui-selectdate--next-month-name">{{moment-format nextMonth 'MMMM YYYY'}}</div>
-    {{eui-day-selector nextMonth on-select='select'}}
+    {{eui-day-selector nextMonth on-select='select' start=_start end=_end}}
   </div>
 </div>
 {{/if}}
