@@ -14,6 +14,8 @@ let EUISelectdateComponent = Ember.Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
     this.set('_date', this.get('date') || Moment());
+    this.set('_start', this.get('start'));
+    this.set('_end', this.get('end'));
   },
   
   nextMonth: computed('_date', function(){
@@ -40,6 +42,7 @@ let EUISelectdateComponent = Ember.Component.extend({
           this.set('isSelectingRange', false);
         } else {
           this.set('_start', date);
+          this.set('_end', null);
           this.set('isSelectingRange', true);
         }        
       }

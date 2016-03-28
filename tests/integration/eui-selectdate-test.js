@@ -264,3 +264,34 @@ test('it should accept range and on-range-change arguments', function(assert){
   assert.deepEqual(this.currentMonth.highlighted(), ['15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
   assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4']);
 });
+
+test('it should accept range and on-range-change arguments', function(assert){
+  
+  let date = Moment('January 21, 2014');
+  
+  this.set('date', date);
+  this.set('start', Moment('January 15, 2014'));
+  this.set('end', Moment('February 4, 2014'));
+  
+  let startSelected, endSelected, actionHandlerCalled;
+  this.on('rangeChanged', function(start, end) {
+    actionHandlerCalled = true;
+    startSelected = start;
+    endSelected = end;
+  });
+  
+  this.render(hbs`{{eui-selectdate date isOpen=true range=true start=start end=end on-range-change='rangeChanged'}}`)
+
+  this.currentMonth.selectDay(Moment('January 18, 2014'));
+
+  assert.deepEqual(this.currentMonth.highlighted(), [ '18' ], 'no highlighted items');
+
+  this.nextMonth.selectDay(Moment('February 8, 2014'));  
+
+  assert.ok(actionHandlerCalled);
+  assert.equal(startSelected.format('DD/MM/YYYY'), '18/01/2014');
+  assert.equal(endSelected.format('DD/MM/YYYY'), '08/02/2014');
+  
+  assert.deepEqual(this.currentMonth.highlighted(), ['18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
+  assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4', '5', '6', '7', '8']);
+});
