@@ -20,7 +20,8 @@ const EUIInterval = Ember.Component.extend({
     `is-selected:--is-selected`,
     `is-disabled:--is-disabled`,
     `is-now:--is-now`,
-    `is-empty:--is-empty`
+    `is-empty:--is-empty`,
+    'is-highlighted:--is-highlighted'
   ],
 
   format: computed('interval', function() {

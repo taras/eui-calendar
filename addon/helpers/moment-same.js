@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import moment from 'moment';
 
 export function momentSame([date1, date2, unit]/*, hash*/) {
   if (!date1 || !date2) {

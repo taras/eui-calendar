@@ -35,6 +35,10 @@ export default class DaySelector {
     let datetime = date.format(HTML5_DATETIME_FORMAT);
     return this.$(`.eui-interval[data-datetime="${datetime}"]`).hasClass('--is-selected');
   }
+  
+  highlighted() {
+    return this.$('.--is-highlighted').map(trimText).toArray();
+  }
 
   selectDay(day) {
     let datetime = day.format(HTML5_DATETIME_FORMAT);

@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 import DaySelector from 'eui-calendar/tests/page-objects/day-selector';
 
-moduleForComponent('eui-day-selector', 'Integration | Component | Selectors | eui day', {
+moduleForComponent('eui-day-selector', 'Integration | Component | Selectors | eui day selector', {
   integration: true,
   beforeEach() {
     this.set('month', moment('August 2015'));
@@ -101,3 +101,45 @@ test('it should accept a selection date attribute', function(assert){
   assert.ok(this.$('.--is-selected:contains(14)').length, '14th is selected');
  
 });
+
+test('it should accept start and end arguments', function(assert){
+  
+  let date = moment('March 14, 2016');
+  let start = moment('March 10, 2016');
+  let end = moment('March 17, 2016');
+  
+  this.set('date', date);
+  this.set('start', start);
+  this.set('end', end);
+  
+  this.render(hbs`
+    {{#eui-day-selector date start=start end=end as |day|}}
+      {{eui-interval day 'day'
+        is-selected=(moment-same selection day 'day')
+        is-highlighted=(or (moment-between day start end) (moment-same day start) (moment-same day end))
+      }}
+    {{/eui-day-selector}} 
+  `);
+  
+  assert.equal(this.$('.--is-highlighted').length, 8, '8 days are highlighted');
+  assert.deepEqual(this.component.highlighted(), [ '10', '11', '12', '13', '14', '15', '16', '17' ], 'highlighted days');
+});
+
+test('it should highlight elements with default layout', function(assert){
+  
+  let date = moment('March 14, 2016');
+  let start = moment('March 10, 2016');
+  let end = moment('March 17, 2016');
+  
+  this.set('date', date);
+  this.set('start', start);
+  this.set('end', end);
+  
+  this.render(hbs`{{eui-day-selector date start=start end=end}}`);
+  
+  assert.equal(this.$('.--is-highlighted').length, 8, '8 days are highlighted');
+  assert.deepEqual(this.component.highlighted(), [ '10', '11', '12', '13', '14', '15', '16', '17' ], 'highlighted days');
+  
+});
+
+

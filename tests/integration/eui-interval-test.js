@@ -91,3 +91,11 @@ test('is-now class', function(assert) {
   this.set('now', Moment());
   assert.ok(this.component.isNow(), 'has is-now class when now property is now');
 });
+
+test('is-hightlighted class', function(assert){
+  
+  this.render(hbs`{{eui-interval moment 'day' is-highlighted=true}}`);
+  
+  assert.ok(this.$('.eui-interval').hasClass('--is-highlighted'), 'has is-highlighted class');
+  
+});

@@ -17,6 +17,7 @@
         {{eui-interval day 'day'
           is-selected=(moment-same selection day 'day')
           on-select=(action 'selectDay')
+          is-highlighted=(or (moment-between day start end) (moment-same day start) (moment-same day end))
         }}
       {{else}}
         {{#eui-interval day 'day'
