@@ -25,7 +25,6 @@ const DaySelector = Ember.Component.extend({
 
   actions: {
     selectDay(day) {
-      this.set('selection', day);
       this.sendAction('on-select', day);
     }
   }

@@ -76,16 +76,16 @@ test('yields days as block parameter', function(assert) {
   ], 'headers are present');
 });
 
-
-test('select-day action', function(assert) {
+test('on-select action', function(assert) {
   const DAY = moment('August 18, 2015');
   let selectedDay;
 
   this.on('selectDay', function(day) {
     selectedDay = day;
+    this.set('selection', day);
   });
 
-  this.render(hbs`{{eui-day-selector month on-select=(action 'selectDay')}}`);
+  this.render(hbs`{{eui-day-selector month selection=selection on-select=(action 'selectDay')}}`);
   this.component.selectDay(DAY);
   assert.equal(selectedDay.format('YYYY-MM-DD'), '2015-08-18', 'day has been selected');
   assert.ok(this.component.isSelected(DAY), 'element has selected class');
@@ -141,5 +141,3 @@ test('it should highlight elements with default layout', function(assert){
   assert.deepEqual(this.component.highlighted(), [ '10', '11', '12', '13', '14', '15', '16', '17' ], 'highlighted days');
   
 });
-
-

@@ -249,7 +249,7 @@ test('it should accept range and on-range-change arguments', function(assert){
     endSelected = end;
   });
   
-  this.render(hbs`{{eui-selectdate date isOpen=true range=true on-range-change='rangeChanged'}}`)
+  this.render(hbs`{{eui-selectdate date isOpen=true range=true on-range-change='rangeChanged'}}`);
    
   this.currentMonth.selectDay(Moment('January 15, 2014'));
   
@@ -280,7 +280,7 @@ test('it should accept range and on-range-change arguments', function(assert){
     endSelected = end;
   });
   
-  this.render(hbs`{{eui-selectdate date isOpen=true range=true start=start end=end on-range-change='rangeChanged'}}`)
+  this.render(hbs`{{eui-selectdate date isOpen=true range=true start=start end=end on-range-change='rangeChanged'}}`);
 
   this.currentMonth.selectDay(Moment('January 18, 2014'));
 
