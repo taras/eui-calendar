@@ -8,23 +8,51 @@
   <li class="eui-nameofday">Sat</li>
 </ol>
 
-<ol class="eui-day-selector--days">
-  {{#each days as |day|}}
-    {{#if hasBlock}}
-      {{yield day}}
-    {{else}}
-      {{#if (moment-same _month day 'month')}}
-        {{eui-interval day 'day'
-          is-selected=(moment-same selection day 'day')
-          on-select=(action 'selectDay')
-          is-highlighted=(or (moment-between day start end) (moment-same day start) (moment-same day end))
-        }}
-      {{else}}
-        {{#eui-interval day 'day'
-          is-empty=true
-          is-selected=(moment-same selection day 'day')
-        }}{{/eui-interval}}
-      {{/if}}
-    {{/if}}
-  {{/each}}
-</ol>
+{{#with (hash 
+  component=(or intervalComponent (component 'eui-interval'))
+) as |defaults|}}
+
+  <ol class="eui-day-selector--days">
+    {{#each days as |day|}}
+
+      {{#with (hash
+          component=        defaults.component
+          is-selected=      (moment-same selection day 'day')
+          is-highlighted=   (or   (moment-between day start end) 
+                                  (moment-same day start) 
+                                  (moment-same day end)
+                            )
+          on-select=        (action 'selectDay')
+          is-same-month=    (moment-same _month day 'month')
+        ) as |interval|}}
+        
+        {{#if hasBlock}}
+        
+          {{yield day interval}}
+          
+        {{else}}
+        
+          {{#if interval.is-same-month}}
+          
+            {{interval.component day 'day' 
+              is-selected=    interval.is-selected
+              is-highlighted= interval.is-highlighted
+              on-select=      interval.on-select
+            }}
+            
+          {{else}}
+          
+            {{#interval.component day 'day' is-empty=true}}{{/interval.component}}
+            
+          {{/if}}
+          
+        {{/if}}
+        
+      {{/with}}
+      
+    {{/each}}
+  </ol>
+
+{{/with}}
+
+

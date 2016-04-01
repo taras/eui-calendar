@@ -1,16 +1,33 @@
 <button class="eui-selectdate--trigger" {{action 'open'}}>{{if date (moment-format date 'MMMM D') placeholder}}</button>
-
+  
 {{#if isOpen}}
-<div class="eui-selectdate--window">
-  <button class="eui-selectdate--next" {{action 'next' _date}}>&gt;&gt;</button>
-  <button class="eui-selectdate--previous" {{action 'previous' _date}}>&lt;&lt;</button>
-  <div class="eui-selectdate--current-month">
-    <div class="eui-selectdate--current-month-name">{{moment-format _date 'MMMM YYYY'}}</div>
-    {{eui-day-selector _date on-select='select' start=_start end=_end}}
+  <div class="eui-selectdate--window">
+    <button class="eui-selectdate--next" {{action 'next' _date}}>&gt;&gt;</button>
+    <button class="eui-selectdate--previous" {{action 'previous' _date}}>&lt;&lt;</button>
+
+    {{#each calendars as |calendar|}}
+
+      <div class="eui-selectdate--{{calendar.name}}-month">
+        <div class="eui-selectdate--{{calendar.name}}-month-name">{{moment-format calendar.date 'MMMM YYYY'}}</div>
+        {{#eui-day-selector calendar.date 
+          start=_start 
+          end=_end 
+          as |day interval|
+        }}
+          {{#if interval.is-same-month}}
+            {{interval.component day 'day'
+              is-selected=interval.is-selected
+              is-highlighted=interval.is-highlighted
+              on-select=(action 'select' day)
+              mouseEnter=(action (if isSelectingRange 'hoverRange' 'noop') day)
+            }}
+          {{else}}
+            {{#interval.component day 'day' is-empty=true}}{{/interval.component}}
+          {{/if}}
+        {{/eui-day-selector}}
+      </div>
+
+    {{/each}}
+
   </div>
-  <div class="eui-selectdate--next-month">
-      <div class="eui-selectdate--next-month-name">{{moment-format nextMonth 'MMMM YYYY'}}</div>
-    {{eui-day-selector nextMonth on-select='select' start=_start end=_end}}
-  </div>
-</div>
 {{/if}}

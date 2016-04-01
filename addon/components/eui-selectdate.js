@@ -22,6 +22,39 @@ let EUISelectdateComponent = Ember.Component.extend({
     return this.get('_date').clone().add(1, 'month');
   }),
   
+  /**
+   * if we had an (array ) helper, we could do this in the template
+   * ```hbs
+   * (array (hash name='current' date=_date) (hash name='next' date=nextMonth))
+   * ```
+   */
+  calendars: computed('nextMonth', function(){
+    return [ 
+      { name: 'current', date: this.get('_date') },
+      { name: 'next', date: this.get('nextMonth') }
+    ];
+  }),
+  
+  ensureStartBeforeEnd(date) {
+    let start = this.get('_start');
+    if (date.isBefore(start)) {
+      this.set('_start', date);
+      date = start;
+    }
+    this.set('_end', date);
+  },
+  
+  changeRange(date) {
+      if (this.get('isSelectingRange')) {
+          this.ensureStartBeforeEnd(date);
+          return;
+      }
+      this.setProperties({
+        _start: date,
+        _end: null
+      });  
+  },
+  
   actions: {
     open() {
       this.set('isOpen', true);
@@ -36,21 +69,18 @@ let EUISelectdateComponent = Ember.Component.extend({
       this.sendAction('on-select', date);
       let range = this.get('range');
       if (range) {
+        this.changeRange(date);
         if (this.get('isSelectingRange')) {
-          let start = this.get('_start');
-          if (date.isBefore(start)) {
-            this.set('_start', date);
-            date = start;
-          }
-          this.set('_end', date);
           this.sendAction('on-range-change', this.get('_start'), this.get('_end'));
-          this.set('isSelectingRange', false);
-        } else {
-          this.set('_start', date);
-          this.set('_end', null);
-          this.set('isSelectingRange', true);
-        }        
+        }
+        this.toggleProperty('isSelectingRange');
       }
+    },
+    hoverRange(date) {
+      this.changeRange(date);
+    },
+    noop() {
+      // do nothing, this is here for when isSelectingRange === false
     }
   }
 });

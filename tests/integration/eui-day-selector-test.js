@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 import DaySelector from 'eui-calendar/tests/page-objects/day-selector';
+import Ember from 'ember';
 
 moduleForComponent('eui-day-selector', 'Integration | Component | Selectors | eui day selector', {
   integration: true,
@@ -139,5 +140,17 @@ test('it should highlight elements with default layout', function(assert){
   
   assert.equal(this.$('.--is-highlighted').length, 8, '8 days are highlighted');
   assert.deepEqual(this.component.highlighted(), [ '10', '11', '12', '13', '14', '15', '16', '17' ], 'highlighted days');
+});
+
+test('it should accept intervalComponent as an argument', function(assert){
   
+  this.set('date', moment('March 14, 2016'));
+  
+  this.register('component:fake-interval', Ember.Component.extend({
+    classNames: ['fake-interval']
+  }));
+  
+  this.render(hbs`{{eui-day-selector date intervalComponent=(component 'fake-interval')}}`);
+
+  assert.equal(this.$('.fake-interval').length, 42, '42 fake intervals were rendered');
 });

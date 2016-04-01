@@ -76,7 +76,7 @@ test('it should show current and next months to choose from', function(assert) {
 
 test('it should use date at render as default date', function(assert) {
 
-  let now = Moment().utc();
+  let now = Moment();
   let nowLabel = now.format(FORMAT);
   let nextMonth = now.add(1, 'month');
   let nextMonthLabel = nextMonth.format(FORMAT);
@@ -250,7 +250,7 @@ test('it should accept range and on-range-change arguments', function(assert){
   });
   
   this.render(hbs`{{eui-selectdate date isOpen=true range=true on-range-change='rangeChanged'}}`);
-   
+  
   this.currentMonth.selectDay(Moment('January 15, 2014'));
   
   assert.notOk(actionHandlerCalled, 'action was not called');
@@ -265,7 +265,7 @@ test('it should accept range and on-range-change arguments', function(assert){
   assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4']);
 });
 
-test('it should accept range and on-range-change arguments', function(assert){
+test('it should accept range and on-range-change arguments when start and end are specified', function(assert){
   
   let date = Moment('January 21, 2014');
   
@@ -301,7 +301,6 @@ test('it should allow end to be before start', function(assert){
   let date = Moment('January 21, 2014');
   
   this.set('date', date);
-
   
   let startSelected, endSelected, actionHandlerCalled;
   this.on('rangeChanged', function(start, end) {
@@ -322,4 +321,33 @@ test('it should allow end to be before start', function(assert){
 
   assert.deepEqual(this.currentMonth.highlighted(), ['18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
   assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4']);
+});
+
+test('it should highlight temporary range before end date selected', function(assert){
+  
+  let date = Moment('January 21, 2014');
+  
+  this.set('date', date);
+  
+  let actionHandlerCalled;
+  this.on('rangeChanged', function() {
+    actionHandlerCalled = true;
+  });
+
+  this.render(hbs`{{eui-selectdate date isOpen=true range=true on-range-change='rangeChanged'}}`);
+
+  this.currentMonth.mouseenterDay(Moment('January 18, 2014'));
+  
+  assert.deepEqual(this.currentMonth.highlighted(), [], 'after mouseenter on January 18, nothing is highlighted');  
+
+  this.currentMonth.selectDay(Moment('January 18, 2014'));
+  
+  assert.deepEqual(this.currentMonth.highlighted(), ['18'], 'after selection January 18 is highlighted');
+  
+  this.nextMonth.mouseenterDay(Moment('February 4, 2014'));
+
+  assert.deepEqual(this.currentMonth.highlighted(), ['18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31' ]);  
+  assert.deepEqual(this.nextMonth.highlighted(), ['1', '2', '3', '4']);
+  
+  assert.notOk(actionHandlerCalled, 'action not called');  
 });

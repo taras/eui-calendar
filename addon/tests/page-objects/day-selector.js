@@ -45,6 +45,11 @@ export default class DaySelector {
     let datetime = day.format(HTML5_DATETIME_FORMAT);
     this.$(`${this.prefix}.eui-interval[data-datetime="${datetime}"]`).click();
   }
+  
+  mouseenterDay(day) {
+    let datetime = day.format(HTML5_DATETIME_FORMAT);
+    this.$(`${this.prefix}.eui-interval[data-datetime="${datetime}"]`).trigger('mouseenter');
+  }
 }
 
 function trimText() {
